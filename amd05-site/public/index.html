@@ -1,0 +1,1668 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fcfbfc">
+<link rel="icon" href="/img/logo.png">
+<meta property="og:title" content="AMD-05 — компьютерная техника, ремонт и сборка ПК">
+<meta property="og:description" content="Магазин компьютерной техники в Махачкале: товары, ремонт ноутбуков и ПК, сборка компьютеров.">
+<meta property="og:image" content="/img/macbook.jpg">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>AMD-05</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marck+Script&display=swap">
+<meta name="description" content="Магазин компьютерной техники, ремонт и сборка ПК — Махачкала">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<style>
+/* ============ AMD-05 — светлый магазин компьютерной техники ============
+   Layout: одностраничник, прозрачные «стеклянные» карточки на мягком
+   красно-розовом фоне с голографическим 3D-слоем; крупные скругления. */
+:root{
+  color-scheme: light;
+
+  --bg:#fcfbfc;
+  --fg:#171114;
+  --muted:#6a5861;
+  --muted-2:#9a8c92;
+
+  --accent:#e4002b;      /* фирменный красный AMD */
+  --accent-2:#ff2d6a;    /* насыщенный розово-красный */
+  --accent-3:#ff6f9c;
+  --accent-ink:#c20030;
+
+  --surface:rgba(255,255,255,0.72);
+  --surface-2:rgba(255,255,255,0.90);
+  --surface-solid:#ffffff;
+  --glass-border:rgba(23,17,20,0.20);
+  --glass-border-2:rgba(23,17,20,0.12);
+
+  --ok:#1f9d6b;
+  --warn:#c9801a;
+
+  --shadow-sm:0 2px 10px -4px rgba(23,17,20,0.16);
+  --shadow:0 14px 40px -18px rgba(23,17,20,0.22);
+  --shadow-lg:0 34px 80px -30px rgba(23,17,20,0.32);
+
+  --radius:14px;
+  --radius-lg:20px;
+  --radius-xl:26px;
+  --maxw:1180px;
+
+  --font-display:"Unbounded","Manrope",system-ui,sans-serif;
+  --font-body:"Manrope",system-ui,-apple-system,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,monospace;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:var(--font-body);
+  color:var(--fg);
+  background:
+    radial-gradient(820px 520px at 88% -8%, #ffe3ec 0%, rgba(255,227,236,0) 58%),
+    radial-gradient(680px 520px at -5% 8%, #fff1ea 0%, rgba(255,241,234,0) 55%),
+    var(--bg);
+  min-height:100%;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.page{position:relative; z-index:1}
+
+/* ---- общие обёртки ---- */
+.wrap{
+  width:100%; max-width:var(--maxw); margin-inline:auto;
+  padding-left:max(18px, env(safe-area-inset-left,0px));
+  padding-right:max(18px, env(safe-area-inset-right,0px));
+}
+section{scroll-margin-top:84px}
+.block{padding-block:clamp(48px,7vw,96px)}
+.eyebrow{
+  font-family:var(--font-mono); font-size:.72rem; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--accent-ink); font-weight:600;
+  display:inline-flex; align-items:center; gap:.5em; margin:0 0 .6em;
+}
+.eyebrow::before{content:""; width:26px; height:2px; background:linear-gradient(90deg,var(--accent),var(--accent-2)); border-radius:2px}
+h1,h2,h3{font-family:var(--font-display); font-weight:700; line-height:1.08; text-wrap:balance; margin:0}
+.h-sec{font-size:clamp(1.7rem,4.3vw,2.7rem); letter-spacing:-.01em}
+.sub{color:var(--muted); max-width:62ch; margin:.7em 0 0; font-size:1.02rem}
+
+/* ---- кнопки ---- */
+.btn{
+  --b1:var(--accent); --b2:var(--accent-2);
+  display:inline-flex; align-items:center; justify-content:center; gap:.55em;
+  font-family:var(--font-body); font-weight:700; font-size:.98rem;
+  padding:.8em 1.4em; border-radius:999px; border:0; cursor:pointer;
+  color:#fff; background:linear-gradient(120deg,var(--b1),var(--b2));
+  box-shadow:var(--shadow-sm); text-decoration:none; transition:transform .15s ease, box-shadow .2s ease, filter .2s ease;
+  white-space:nowrap;
+}
+.btn:hover{transform:translateY(-2px); box-shadow:var(--shadow); filter:saturate(1.08)}
+.btn:active{transform:translateY(0)}
+.btn.ghost{background:var(--surface-2); color:var(--accent-ink); box-shadow:inset 0 0 0 1.5px var(--glass-border)}
+.btn.ghost:hover{background:#fff}
+.btn.wa{--b1:#25d366; --b2:#12a150}
+.btn.lg{padding:1em 1.7em; font-size:1.05rem}
+.btn.block{width:100%}
+.btn:focus-visible{outline:3px solid var(--accent-3); outline-offset:3px}
+
+/* ---- стекло ---- */
+.glass{
+  background:var(--surface);
+  backdrop-filter:blur(16px) saturate(1.2);
+  -webkit-backdrop-filter:blur(16px) saturate(1.2);
+  border:1px solid var(--glass-border);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow);
+}
+
+/* ======================= ШАПКА ======================= */
+header.nav{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:30;
+}
+body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top,0px); z-index:31; background:rgba(255,245,248,.9)}
+.nav-inner{
+  margin-top:10px; margin-bottom:4px;
+  display:flex; align-items:center; gap:14px;
+  padding:10px 16px;
+  background:var(--surface-2);
+  backdrop-filter:blur(18px) saturate(1.3); -webkit-backdrop-filter:blur(18px) saturate(1.3);
+  border:1px solid var(--glass-border);
+  border-radius:999px;
+  box-shadow:var(--shadow-sm);
+}
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none; margin-right:auto}
+.brand img{height:40px; width:auto; display:block}
+.nav-links{display:flex; align-items:center; gap:4px}
+.nav-links a{
+  font-weight:600; font-size:.95rem; color:var(--fg); text-decoration:none;
+  padding:.5em .85em; border-radius:999px; transition:background .18s ease,color .18s ease; white-space:nowrap;
+}
+.nav-links a:hover{background:rgba(228,0,43,.08); color:var(--accent-ink)}
+.nav-cta{display:flex; align-items:center; gap:8px}
+.menu-btn{display:none; align-items:center; justify-content:center; width:44px; height:44px; border-radius:50%; border:1px solid var(--glass-border); background:var(--surface-2); cursor:pointer}
+.menu-btn span{display:block; width:20px; height:2px; background:var(--accent-ink); position:relative}
+.menu-btn span::before,.menu-btn span::after{content:""; position:absolute; left:0; width:20px; height:2px; background:var(--accent-ink)}
+.menu-btn span::before{top:-6px} .menu-btn span::after{top:6px}
+
+/* ======================= HERO ======================= */
+.hero{position:relative; padding-top:20px; overflow:hidden}
+.hero-stage{position:relative; min-height:clamp(400px,40vw,480px); display:flex; align-items:center}
+#matrix{position:fixed; inset:0; width:100vw; height:100vh; z-index:0; pointer-events:none; display:block}
+.hero-photo{
+  position:absolute; right:0; top:50%; transform:translateY(-50%) rotate(-1.2deg);
+  width:min(42%,470px); z-index:1; border-radius:var(--radius-xl); overflow:hidden;
+  box-shadow:var(--shadow-lg); border:1px solid rgba(23,17,20,.14);
+}
+.hero-photo::after{content:""; position:absolute; inset:0; box-shadow:inset 0 0 80px rgba(226,0,60,.10); pointer-events:none}
+.hero-photo img{display:block; width:100%; height:auto}
+.hero-photo .slogan{
+  position:absolute; z-index:2; left:7%; top:7%; max-width:62%;
+  font-family:"Marck Script","Segoe Script","Bradley Hand",cursive;
+  font-size:clamp(1.3rem,2.4vw,1.95rem); line-height:1.25; color:var(--accent-ink);
+  transform:rotate(-4deg); text-shadow:0 1px 0 rgba(255,255,255,.7); pointer-events:none;
+}
+.hero-panel{
+  position:relative; z-index:2; max-width:690px;
+  background:rgba(255,255,255,.72);
+  backdrop-filter:blur(18px) saturate(1.1); -webkit-backdrop-filter:blur(18px) saturate(1.1);
+  border:1px solid var(--glass-border); border-radius:var(--radius-lg);
+  box-shadow:var(--shadow); padding:clamp(22px,3vw,40px);
+}
+.hero h1{font-size:clamp(2.1rem,5.4vw,3.8rem); letter-spacing:-.025em; line-height:1.05}
+.hero h1 .mark{color:var(--accent)}
+.hero p.lead{font-size:clamp(1rem,2.1vw,1.12rem); color:var(--muted); max-width:46ch; margin:1.05em 0 0}
+.hero-cta{display:flex; flex-wrap:wrap; gap:12px; margin-top:1.6em}
+.hero-stats{display:flex; flex-wrap:wrap; gap:8px; margin-top:1.5em}
+.chip{
+  display:inline-flex; align-items:center; gap:.5em; font-size:.8rem; font-weight:600;
+  padding:.5em .85em; border-radius:999px; background:#fff;
+  border:1px solid var(--glass-border-2); color:var(--fg);
+}
+.chip b{color:var(--accent-ink)}
+@media(max-width:900px){
+  .hero-stage{flex-direction:column; align-items:stretch; min-height:0}
+  .hero-photo{position:relative; top:auto; right:auto; transform:rotate(-1.2deg); width:92%; margin:0 auto -34px; order:1; aspect-ratio:16/10}
+  .hero-photo img{height:100%; object-fit:cover}
+  .hero-panel{order:2; max-width:none; margin-top:0}
+}
+
+/* ======================= ТОВАРЫ ======================= */
+.cat-bar{display:flex; flex-wrap:wrap; gap:9px; margin:22px 0 26px}
+.cat-pill{
+  font-weight:600; font-size:.9rem; padding:.55em 1.05em; border-radius:999px; cursor:pointer;
+  background:var(--surface-2); border:1px solid var(--glass-border-2); color:var(--fg);
+  transition:all .16s ease;
+}
+.cat-pill:hover{border-color:var(--glass-border)}
+.cat-pill.active{background:linear-gradient(120deg,var(--accent),var(--accent-2)); color:#fff; border-color:transparent; box-shadow:var(--shadow-sm)}
+.search-row{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:10px}
+.search{flex:1; min-width:220px; position:relative}
+.search input{
+  width:100%; padding:.85em 1em .85em 2.6em; border-radius:999px;
+  border:1px solid var(--glass-border); background:var(--surface-2); font:inherit; color:var(--fg);
+}
+.search svg{position:absolute; left:14px; top:50%; transform:translateY(-50%); width:18px; height:18px; opacity:.5}
+.search input:focus{outline:none; border-color:var(--accent-2); box-shadow:0 0 0 4px rgba(255,77,135,.14)}
+
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:18px}
+.card{
+  background:var(--surface); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  border:1px solid var(--glass-border); border-radius:var(--radius-lg); overflow:hidden;
+  display:flex; flex-direction:column; box-shadow:var(--shadow-sm);
+  transition:transform .18s ease, box-shadow .2s ease;
+}
+.card:hover{transform:translateY(-4px); box-shadow:var(--shadow)}
+.card .thumb{
+  aspect-ratio:16/10; display:grid; place-items:center; position:relative;
+  background:
+    radial-gradient(160px 110px at 72% 16%, rgba(255,45,106,.10), transparent 62%),
+    linear-gradient(150deg,#f8f4f6,#ece5e9);
+  border-bottom:1px solid var(--glass-border-2);
+}
+.card .thumb .gi{width:56px; height:56px; opacity:.9}
+.card .thumb .tag{position:absolute; top:10px; left:10px; font-size:.68rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; background:rgba(255,255,255,.85); color:var(--accent-ink); padding:.35em .7em; border-radius:999px}
+.card .thumb .stock{position:absolute; top:10px; right:10px; font-size:.68rem; font-weight:700; padding:.35em .6em; border-radius:999px}
+.stock.in{background:rgba(31,157,107,.16); color:#127a51}
+.stock.out{background:rgba(201,128,26,.18); color:#9a5f05}
+.card .body{padding:14px 15px 16px; display:flex; flex-direction:column; gap:8px; flex:1; min-width:0}
+.card .body h3{font-size:1.02rem; line-height:1.2}
+.card .body .desc{font-size:.86rem; color:var(--muted); min-width:0}
+.card .body .foot{margin-top:auto; display:flex; align-items:center; justify-content:space-between; gap:8px; padding-top:6px}
+.price{font-family:var(--font-display); font-weight:700; font-size:1.05rem; color:var(--accent-ink)}
+.price.na{font-family:var(--font-body); font-size:.82rem; font-weight:600; color:var(--muted)}
+.card .mini{font-size:.78rem; font-weight:700; color:#fff; background:linear-gradient(120deg,var(--accent),var(--accent-2)); padding:.5em .85em; border-radius:999px; text-decoration:none; white-space:nowrap}
+.empty-note{grid-column:1/-1; text-align:center; color:var(--muted); padding:40px 10px}
+
+/* ======================= ФОРМЫ ======================= */
+.field{display:flex; flex-direction:column; gap:6px; margin-bottom:14px}
+.field label{font-weight:600; font-size:.9rem}
+.field .req{color:var(--accent)}
+.input, textarea.input, select.input{
+  width:100%; padding:.85em 1em; border-radius:14px; border:1px solid var(--glass-border);
+  background:var(--surface-2); font:inherit; color:var(--fg); transition:border-color .15s, box-shadow .15s;
+}
+textarea.input{min-height:120px; resize:vertical}
+.input:focus,select.input:focus,textarea.input:focus{outline:none; border-color:var(--accent-2); box-shadow:0 0 0 4px rgba(255,77,135,.14)}
+.hint{font-size:.8rem; color:var(--muted)}
+.err{font-size:.8rem; color:var(--accent); display:none}
+.field.invalid .err{display:block}
+.field.invalid .input{border-color:var(--accent)}
+
+/* фото-аплоад */
+.drop{
+  border:1.5px dashed var(--glass-border); border-radius:16px; padding:20px; text-align:center;
+  background:var(--surface-2); cursor:pointer; transition:border-color .15s, background .15s;
+}
+.drop:hover{border-color:var(--accent-2); background:#fff}
+.drop svg{width:34px; height:34px; opacity:.55; margin-bottom:6px}
+.previews{display:flex; flex-wrap:wrap; gap:10px; margin-top:12px}
+.previews .pv{position:relative; width:76px; height:76px; border-radius:12px; overflow:hidden; border:1px solid var(--glass-border)}
+.previews .pv img{width:100%; height:100%; object-fit:cover}
+.previews .pv button{position:absolute; top:3px; right:3px; width:20px; height:20px; border-radius:50%; border:0; background:rgba(0,0,0,.6); color:#fff; cursor:pointer; font-size:12px; line-height:1}
+
+.two-col{display:grid; grid-template-columns:1.1fr .9fr; gap:28px; align-items:start}
+
+/* ======================= СОБРАТЬ ПК ======================= */
+.builder-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px}
+.cell{
+  background:var(--surface); border:1px solid var(--glass-border); border-radius:var(--radius);
+  padding:16px; display:flex; flex-direction:column; gap:8px; position:relative; overflow:hidden;
+}
+.cell .cell-ic{width:30px; height:30px; color:var(--accent)}
+.cell label{font-weight:700; font-size:.95rem}
+.cell .cell-sub{font-size:.78rem; color:var(--muted); margin-top:-4px}
+.builder-foot{margin-top:22px; display:flex; flex-wrap:wrap; gap:14px; align-items:center}
+
+.scan{display:none; margin-top:24px}
+.scan.show{display:block}
+.scan-box{
+  background:#1a0812; border-radius:var(--radius-lg); padding:22px; overflow:hidden; position:relative;
+  box-shadow:var(--shadow); border:1px solid rgba(255,77,135,.3);
+}
+.scan-box .barwrap{height:8px; border-radius:999px; background:rgba(255,255,255,.12); overflow:hidden; margin-bottom:14px}
+.scan-box .bar{height:100%; width:0; background:linear-gradient(90deg,var(--accent),var(--accent-3)); border-radius:999px; transition:width .25s linear}
+.term{font-family:var(--font-mono); font-size:.82rem; color:#ff9cc0; line-height:1.9; min-height:120px}
+.term .ln{opacity:0; animation:lnIn .3s forwards}
+.term .ok{color:#49e39a}
+@keyframes lnIn{to{opacity:1}}
+.scan-box .scanline{position:absolute; left:0; right:0; height:40px; background:linear-gradient(transparent,rgba(255,77,135,.14),transparent); animation:scanmove 1.6s linear infinite}
+@keyframes scanmove{0%{top:-40px}100%{top:100%}}
+
+.result{display:none; margin-top:24px}
+.result.show{display:block; animation:lnIn .4s}
+.result .spec-list{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin:16px 0}
+.spec-item{background:var(--surface-2); border:1px solid var(--glass-border-2); border-radius:14px; padding:12px 14px}
+.spec-item .k{font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); font-weight:600}
+.spec-item .v{font-weight:700; font-size:1rem; margin-top:2px}
+.result .note{font-size:.86rem; color:var(--muted); background:rgba(255,77,135,.08); border:1px solid var(--glass-border-2); padding:12px 14px; border-radius:14px; margin:4px 0 16px}
+
+/* ======================= О НАС ======================= */
+.about-grid{display:grid; grid-template-columns:1fr 1fr; gap:34px; align-items:center}
+.trust{display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-top:8px}
+.trust .t{background:var(--surface); border:1px solid var(--glass-border); border-radius:var(--radius); padding:16px}
+.trust .t .ti{width:28px; height:28px; color:var(--accent); margin-bottom:8px}
+.trust .t h4{margin:0 0 3px; font-family:var(--font-display); font-size:1rem}
+.trust .t p{margin:0; font-size:.85rem; color:var(--muted)}
+.master-card{position:relative}
+.master-card .av{
+  width:100%; aspect-ratio:1/1; border-radius:var(--radius-xl); display:grid; place-items:center;
+  background:linear-gradient(150deg,#ffd4e4,#ff9ebf); border:1px solid var(--glass-border); box-shadow:var(--shadow);
+}
+.master-card .av svg{width:52%; height:52%; opacity:.92}
+.master-stats{display:flex; flex-direction:column; gap:12px}
+.master-stats .ms{text-align:left; padding:18px 20px !important; background:var(--surface-2); border:1px solid var(--glass-border-2); border-radius:16px; padding:12px 8px}
+.master-stats .ms b{display:block; font-family:var(--font-display); font-size:1.3rem; color:var(--accent-ink)}
+.master-stats .ms span{font-size:.74rem; color:var(--muted)}
+
+/* ======================= КОНТАКТЫ ======================= */
+.contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:24px}
+.contact-card .row{display:flex; gap:14px; align-items:flex-start; padding:14px 0; border-bottom:1px solid var(--glass-border-2)}
+.contact-card .row:last-child{border-bottom:0}
+.contact-card .ic{flex:none; width:42px; height:42px; border-radius:12px; display:grid; place-items:center; background:linear-gradient(140deg,rgba(228,0,43,.12),rgba(255,77,135,.14)); color:var(--accent)}
+.contact-card .ic svg{width:20px; height:20px}
+.contact-card .rt{min-width:0}
+.contact-card .rt .k{font-size:.76rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); font-weight:600}
+.contact-card .rt .v{font-weight:700; font-size:1.02rem; word-break:break-word}
+.contact-card .rt a{color:var(--accent-ink); text-decoration:none}
+.copy{margin-left:8px; font-size:.72rem; font-weight:700; color:var(--accent); background:rgba(228,0,43,.1); border:0; border-radius:999px; padding:.3em .7em; cursor:pointer}
+.copy:hover{background:rgba(228,0,43,.18)}
+
+/* ======================= FOOTER ======================= */
+footer{margin-top:40px; padding-block:30px; border-top:1px solid var(--glass-border-2)}
+.foot-inner{display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between}
+.foot-inner img{height:34px}
+.foot-links{display:flex; gap:16px; flex-wrap:wrap}
+.foot-links a{color:var(--muted); text-decoration:none; font-size:.9rem}
+.foot-links a:hover{color:var(--accent-ink)}
+.admin-link{cursor:pointer; color:var(--muted-2); font-size:.78rem; background:none; border:0; font-family:inherit}
+
+
+
+/* ======================= МОДАЛКА (админ) ======================= */
+.modal{position:fixed; inset:0; z-index:60; display:none; align-items:flex-start; justify-content:center; padding:20px; overflow:auto}
+.modal.open{display:flex}
+.modal::before{content:""; position:fixed; inset:0; background:rgba(43,18,28,.5); backdrop-filter:blur(3px)}
+.modal .panel{position:relative; width:100%; max-width:720px; margin:40px 0; background:var(--surface-solid); border-radius:var(--radius-lg); box-shadow:var(--shadow-lg); border:1px solid var(--glass-border); overflow:hidden}
+.panel .phead{display:flex; align-items:center; justify-content:space-between; padding:18px 20px; border-bottom:1px solid var(--glass-border-2); position:sticky; top:0; background:var(--surface-solid); z-index:2}
+.panel .phead h3{font-size:1.15rem}
+.panel .pbody{padding:20px}
+.x{width:38px; height:38px; border-radius:50%; border:1px solid var(--glass-border-2); background:var(--surface-2); cursor:pointer; font-size:18px; line-height:1}
+.admin-status{font-size:.85rem; padding:10px 12px; border-radius:12px; margin-bottom:14px; display:none}
+.admin-status.show{display:block}
+.admin-status.ok{background:rgba(31,157,107,.14); color:#0f6e49}
+.admin-status.warn{background:rgba(201,128,26,.16); color:#8a5406}
+.tabs{display:flex; gap:6px; margin-bottom:16px; flex-wrap:wrap}
+.tabs button{font:inherit; font-weight:600; font-size:.9rem; padding:.5em 1em; border-radius:999px; border:1px solid var(--glass-border-2); background:var(--surface-2); cursor:pointer}
+.tabs button.active{background:linear-gradient(120deg,var(--accent),var(--accent-2)); color:#fff; border-color:transparent}
+.adm-list{display:flex; flex-direction:column; gap:8px; margin-top:8px}
+.adm-row{display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--surface-2); border:1px solid var(--glass-border-2); border-radius:12px}
+.adm-row .ri{min-width:0; flex:1}
+.adm-row .ri b{display:block; font-size:.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.adm-row .ri span{font-size:.78rem; color:var(--muted)}
+.adm-row button{font:inherit; font-size:.8rem; font-weight:700; border:0; border-radius:8px; padding:.4em .7em; cursor:pointer}
+.adm-row .edit{background:rgba(228,0,43,.1); color:var(--accent-ink)}
+.adm-row .del{background:rgba(201,128,26,.16); color:#8a5406}
+.row2{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.check{display:flex; align-items:center; gap:8px; font-weight:600; font-size:.9rem}
+.check.consent{align-items:flex-start; font-weight:500; font-size:.85rem; line-height:1.45; color:var(--muted); cursor:pointer}
+.check.consent input{margin-top:3px; width:18px; height:18px; flex:none; accent-color:var(--accent)}
+.check.consent a{color:var(--accent-ink,#c4001f)}
+.consent-note{font-size:.8rem; color:var(--muted-2,#8a7c82); margin-top:6px}
+.consent-note a{color:inherit}
+.legal-links{display:flex; gap:6px 16px; flex-wrap:wrap; margin-top:14px}
+.legal-links a{color:var(--muted-2,#8a7c82); font-size:.8rem; text-decoration:underline}
+.check input{width:18px; height:18px; accent-color:var(--accent)}
+
+/* ======================= АДАПТИВ ======================= */
+@media(max-width:900px){
+  .hero-grid{grid-template-columns:1fr; gap:30px}
+  .hero-visual{order:-1}
+  .two-col,.about-grid,.contact-grid{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .nav-links{
+    display:none; position:absolute; top:calc(100% + 8px); left:0; right:0;
+    flex-direction:column; align-items:stretch; gap:2px; padding:10px;
+    background:var(--surface-solid); border:1px solid var(--glass-border); border-radius:20px; box-shadow:var(--shadow);
+  }
+  .nav-links.open{display:flex}
+  .nav-links a{padding:.75em 1em}
+  .menu-btn{display:inline-flex}
+  .nav-cta .btn:not(.icon-only){display:none}
+  .row2{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .scanline{animation:none}
+  *{transition:none!important}
+}
+
+.rlist{display:flex; flex-direction:column; gap:11px; font-size:.95rem}
+.ritem{position:relative; padding-left:20px}
+.ritem::before{content:""; position:absolute; left:2px; top:.62em; width:7px; height:7px; border-radius:2px; background:linear-gradient(135deg,var(--accent),var(--accent-2))}
+.empty-note{background:var(--surface); border:1px dashed var(--glass-border); border-radius:var(--radius-lg); max-width:620px; margin:0 auto}
+
+.card .thumb{aspect-ratio:4/3; background:#fff}
+.card .thumb .tag,.card .thumb .stock{z-index:2}
+.pimg{position:absolute; inset:0; width:100%; height:100%; object-fit:contain; padding:8px 8px 44px; cursor:zoom-in}
+.thumbs{position:absolute; left:8px; right:8px; bottom:8px; display:flex; gap:6px; justify-content:center; z-index:2; flex-wrap:wrap}
+.tb{width:32px; height:32px; border-radius:8px; border:1.5px solid var(--glass-border); padding:0; overflow:hidden; background:#fff; cursor:pointer}
+.tb img{width:100%; height:100%; object-fit:cover; display:block}
+.tb.on{border-color:var(--accent)}
+.tb:focus-visible{outline:3px solid var(--accent-3); outline-offset:2px}
+.chips{display:flex; flex-wrap:wrap; gap:6px}
+.chips span{font-size:.74rem; font-weight:700; padding:.3em .65em; border-radius:999px; background:rgba(228,0,43,.08); color:var(--accent-ink)}
+.card .note{font-size:.85rem; color:var(--muted)}
+#lightbox{align-items:center; padding:16px}
+.lb{position:relative; z-index:1; margin:auto; width:min(920px,100%)}
+.lb img{display:block; width:100%; max-height:84vh; object-fit:contain; background:#fff; border-radius:var(--radius-lg)}
+.lbn{position:absolute; top:50%; transform:translateY(-50%); width:44px; height:44px; border-radius:50%; border:0; background:rgba(255,255,255,.92); font-size:24px; line-height:1; cursor:pointer; box-shadow:var(--shadow)}
+.lbn.prev{left:10px} .lbn.next{right:10px}
+.lbx{position:absolute; top:10px; right:10px; z-index:2; background:rgba(255,255,255,.92)}
+
+.btn:disabled{opacity:.45; cursor:not-allowed; transform:none; box-shadow:none; filter:none}
+.btn.sm{padding:.55em 1.05em; font-size:.88rem}
+.modal .panel.wide{max-width:900px}
+.panel .phead{gap:12px; flex-wrap:wrap}
+.phead .phact{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.pstate{font-size:.78rem; font-weight:600; margin-top:2px}
+.pstate.dirty{color:#8a5406}
+.pstate.clean{color:#0f6e49}
+.adm-th{width:48px; height:48px; border-radius:10px; object-fit:cover; flex:none; background:#f3eef0; border:1px solid var(--glass-border-2); display:block}
+.adm-row .mv{background:#f3eef0; color:var(--fg); width:30px; padding:.4em 0}
+.adm-row .mv:disabled{opacity:.35; cursor:default}
+.adm-row .cin{padding:.55em .8em; border-radius:10px}
+.adm-row .cnt{font-size:.78rem; color:var(--muted); white-space:nowrap}
+.aform{background:#fbf7f9; border:1px solid var(--glass-border-2); border-radius:var(--radius); padding:16px; margin:14px 0}
+.aform h4{margin:0 0 12px; font-family:var(--font-display); font-size:1rem}
+.aimgs{display:flex; flex-wrap:wrap; gap:10px; margin-top:12px}
+.aimg{position:relative; width:96px; height:96px; border-radius:12px; overflow:hidden; border:1px solid var(--glass-border); background:#fff}
+.aimg img{width:100%; height:100%; object-fit:cover; display:block}
+.aimg .first{position:absolute; left:4px; top:4px; font-size:.6rem; font-weight:700; background:var(--accent); color:#fff; padding:.15em .5em; border-radius:999px}
+.aimg .aact{position:absolute; left:0; right:0; bottom:0; display:flex; justify-content:space-between; background:rgba(23,17,20,.55)}
+.aimg .aact button{border:0; background:none; color:#fff; font-size:15px; line-height:1; padding:.35em .55em; cursor:pointer}
+.tagprev{margin-top:8px; min-height:1.4em}
+.fmsg{font-size:.85rem; color:var(--accent); margin:8px 0 0; min-height:1.2em}
+</style>
+
+</head>
+<body>
+<canvas id="matrix" aria-hidden="true"></canvas>
+
+<div class="page">
+
+  <!-- ====== ШАПКА ====== -->
+  <header class="nav">
+    <div class="wrap">
+      <div class="nav-inner">
+        <a class="brand" href="#top"><img src="/img/logo.png" alt="AMD-05"></a>
+        <nav class="nav-links" id="navlinks">
+          <a href="#tovary">Товары</a>
+          <a href="#remont">Ремонт</a>
+          <a href="#sborka">Собрать ПК</a>
+          <a href="#onas">О нас</a>
+          <a href="#kontakty">Контакты</a>
+        </nav>
+        <div class="nav-cta">
+          
+          <button class="menu-btn" id="menuBtn" aria-label="Меню"><span></span></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <span id="top"></span>
+
+  <!-- ====== HERO ====== -->
+  <section class="hero block">
+    <div class="wrap">
+      <div class="hero-stage">
+        <div class="hero-photo">
+          <div class="slogan">Доверьте свой комп<br>профессионалам</div>
+          <img src="/img/macbook.jpg" alt="Ноутбук в разборе — ремонт и диагностика в AMD-05">
+        </div>
+        <div class="hero-panel">
+          <p class="eyebrow">Компьютерный магазин · Махачкала</p>
+          <h1>Продажа, <span class="mark">ремонт</span> и сборка компьютерной техники</h1>
+          <p class="lead">Ремонтируем ноутбуки и ПК, собираем компьютеры под любую задачу и подбираем комплектующие. Честная диагностика и гарантия на выполненные работы.</p>
+          <div class="hero-cta">
+            <a class="btn lg" href="#tovary">Каталог товаров</a>
+            <a class="btn ghost lg" href="#sborka">Собрать ПК</a>
+          </div>
+          <div class="hero-stats">
+            <span class="chip"><b>Гарантия</b> на работы</span>
+            <span class="chip"><b>Точная</b> диагностика</span>
+            <span class="chip"><b>Оригинальные</b> запчасти</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== ТОВАРЫ ====== -->
+  <section id="tovary" class="block">
+    <div class="wrap">
+      <p class="eyebrow">Каталог</p>
+      <h2 class="h-sec">Товары</h2>
+      <p class="sub">Комплектующие и готовая техника. Нет нужной позиции — напишите в WhatsApp, привезём под заказ.</p>
+
+      <div class="search-row" style="margin-top:22px">
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+          <input id="prodSearch" type="search" placeholder="Поиск по товарам…" aria-label="Поиск">
+        </div>
+      </div>
+      <div class="cat-bar" id="catBar" data-dynamic></div>
+      <div class="grid" id="catalog" data-dynamic></div>
+    </div>
+  </section>
+
+  <!-- ====== РЕМОНТ ====== -->
+  <section id="remont" class="block">
+    <div class="wrap">
+      <div class="two-col">
+        <div class="glass" style="padding:clamp(20px,3vw,32px)">
+          <p class="eyebrow">Заявка на ремонт</p>
+          <h2 class="h-sec">Опишите проблему</h2>
+          <p class="sub" style="margin-bottom:18px">Заполните форму — заявка уйдёт мастеру в WhatsApp. Фото прикрепите в открывшемся чате, так диагностика будет точнее.</p>
+
+          <form id="repairForm" novalidate>
+            <div class="row2">
+              <div class="field">
+                <label for="rName">Ваше имя</label>
+                <input class="input" id="rName" type="text" placeholder="Как к вам обращаться">
+              </div>
+              <div class="field">
+                <label for="rDevice">Тип устройства <span class="req">*</span></label>
+                <select class="input" id="rDevice">
+                  <option value="">Выберите…</option>
+                  <option>Ноутбук</option><option>Стационарный ПК</option><option>Моноблок</option>
+                  <option>Монитор</option><option>Другое</option>
+                </select>
+                <div class="err">Укажите устройство</div>
+              </div>
+            </div>
+            <div class="field">
+              <label for="rProblem">Что случилось? <span class="req">*</span></label>
+              <textarea class="input" id="rProblem" placeholder="Например: не включается, перегревается, залил жидкостью, медленно работает…"></textarea>
+              <div class="err">Опишите проблему</div>
+            </div>
+            <div class="field">
+              <label for="rPhone">Телефон (с WhatsApp) <span class="req">*</span></label>
+              <input class="input" id="rPhone" type="tel" inputmode="tel" placeholder="+7 ___ ___-__-__">
+              <div class="err">Введите номер телефона</div>
+            </div>
+            <div class="field">
+              <label>Фото устройства</label>
+              <label class="drop" for="rPhoto">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5-5 5 5"/><path d="M12 5v12"/></svg>
+                <div style="font-weight:600">Нажмите, чтобы добавить фото</div>
+                <div class="hint">можно несколько снимков</div>
+              </label>
+              <input id="rPhoto" type="file" accept="image/*" multiple hidden>
+              <div class="previews" id="rPreviews"></div>
+              <div class="hint" id="photoHint" style="margin-top:8px; display:none">Фото останутся у вас на устройстве — прикрепите их в чате WhatsApp после отправки заявки.</div>
+            </div>
+            <div class="field">
+              <label class="check consent" for="rConsent">
+                <input type="checkbox" id="rConsent">
+                <span>Я даю <a href="/consent.html" target="_blank" rel="noopener">согласие на обработку персональных данных</a></span>
+              </label>
+              <div class="err">Поставьте галочку, чтобы отправить заявку</div>
+              <div class="consent-note">О том, как мы обрабатываем данные, — в <a href="/privacy.html" target="_blank" rel="noopener">политике конфиденциальности</a>.</div>
+            </div>
+            <a class="btn wa lg block" id="repairSubmit" href="#" target="_blank" rel="noopener">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M.5 23.5l1.65-6a11.5 11.5 0 1 1 4.3 4.2L.5 23.5zM6.7 19.3l.37.22a9.6 9.6 0 1 0-3.23-3.16l.24.38-1 3.6 3.62-1.04z"/></svg>
+              Отправить заявку в WhatsApp
+            </a>
+          </form>
+        </div>
+
+        <div>
+          <div class="glass" style="padding:22px; margin-bottom:16px">
+            <h3 style="font-size:1.15rem; margin-bottom:12px">Что мы ремонтируем</h3>
+            <div class="rlist">
+              <div class="ritem">Ноутбуки: чистка системы охлаждения, замена экрана, клавиатуры, матрицы</div>
+              <div class="ritem">Стационарные ПК: апгрейд, замена комплектующих, профилактика</div>
+              <div class="ritem">Залитие, перегрев, устройство не включается</div>
+              <div class="ritem">Переустановка ОС, удаление вирусов, ускорение системы</div>
+            </div>
+          </div>
+          <div class="glass" style="padding:22px">
+            <h3 style="font-size:1.15rem; margin-bottom:8px">Как проходит ремонт</h3>
+            <ol style="margin:0; padding-left:18px; color:var(--muted); font-size:.92rem; display:flex; flex-direction:column; gap:7px">
+              <li>Вы оставляете заявку и фото</li>
+              <li>Диагностика и честная цена</li>
+              <li>Согласуем стоимость до начала работ</li>
+              <li>Ремонт и гарантия на выполненные работы</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== СОБРАТЬ ПК ====== -->
+  <section id="sborka" class="block">
+    <div class="wrap">
+      <p class="eyebrow">Конфигуратор</p>
+      <h2 class="h-sec">Соберите свой ПК</h2>
+      <p class="sub">Выберите основные параметры — мы подберём совместимые комплектующие и пришлём точный расчёт стоимости в WhatsApp.</p>
+
+      <div class="builder-grid" style="margin-top:24px">
+        <div class="cell">
+          <svg class="cell-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+          <label for="bUse">Назначение</label>
+          <div class="cell-sub">Для чего нужен ПК</div>
+          <select class="input" id="bUse">
+            <option>Игровой</option><option>Для работы и офиса</option><option>Для учёбы</option>
+            <option>Монтаж видео и графика</option><option>Домашний / мультимедиа</option><option>Сервер / NAS</option>
+          </select>
+        </div>
+        <div class="cell">
+          <svg class="cell-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg>
+          <label for="bCpu">Процессор</label>
+          <div class="cell-sub">Мощность системы</div>
+          <select class="input" id="bCpu">
+            <option>AMD Ryzen 5</option><option>AMD Ryzen 7</option><option>AMD Ryzen 9</option>
+            <option>Intel Core i5</option><option>Intel Core i7</option><option>Intel Core i9</option>
+          </select>
+        </div>
+        <div class="cell">
+          <svg class="cell-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="7" width="20" height="12" rx="2"/><circle cx="8" cy="13" r="2.4"/><circle cx="15" cy="13" r="2.4"/></svg>
+          <label for="bGpu">Видеокарта</label>
+          <div class="cell-sub">Графика и игры</div>
+          <select class="input" id="bGpu">
+            <option>Без дискретной (встроенная)</option><option>NVIDIA RTX 4060</option><option>NVIDIA RTX 4070</option>
+            <option>NVIDIA RTX 4080</option><option>AMD Radeon RX 7600</option><option>AMD Radeon RX 7800 XT</option><option>AMD Radeon RX 7900 XTX</option>
+          </select>
+        </div>
+        <div class="cell">
+          <svg class="cell-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="8" width="20" height="8" rx="1.5"/><path d="M6 8v-2M10 8v-2M14 8v-2M18 8v-2M5 20v-4M19 20v-4"/></svg>
+          <label for="bRam">Оперативная память</label>
+          <div class="cell-sub">Многозадачность</div>
+          <select class="input" id="bRam">
+            <option>16 ГБ</option><option>32 ГБ</option><option>64 ГБ</option>
+          </select>
+        </div>
+        <div class="cell">
+          <svg class="cell-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16"/><circle cx="5" cy="8" r=".8" fill="currentColor"/></svg>
+          <label for="bStorage">Накопитель</label>
+          <div class="cell-sub">Объём SSD</div>
+          <select class="input" id="bStorage">
+            <option>SSD 512 ГБ</option><option>SSD 1 ТБ</option><option>SSD 1 ТБ + HDD 2 ТБ</option><option>SSD 2 ТБ</option>
+          </select>
+        </div>
+        <div class="cell">
+          <svg class="cell-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          <label for="bMon">Монитор</label>
+          <div class="cell-sub">Добавить к сборке</div>
+          <select class="input" id="bMon">
+            <option>Без монитора</option><option>24" Full HD</option><option>27" QHD 165 Гц</option><option>32" 4K</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="builder-foot">
+        <button class="btn lg" id="buildBtn" type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg>
+          Подобрать сборку
+        </button>
+        <span class="hint">Расчёт займёт пару секунд</span>
+      </div>
+
+      <!-- анимация анализа -->
+      <div class="scan" id="scan">
+        <div class="scan-box">
+          <div class="scanline"></div>
+          <div class="barwrap"><div class="bar" id="scanBar"></div></div>
+          <div class="term" id="scanTerm"></div>
+        </div>
+      </div>
+
+      <!-- результат -->
+      <div class="result" id="result">
+        <div class="glass" style="padding:clamp(20px,3vw,30px)">
+          <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap">
+            <span style="width:44px; height:44px; border-radius:12px; display:grid; place-items:center; background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:#fff">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>
+            </span>
+            <h3 style="font-size:1.3rem">Ваша конфигурация готова</h3>
+          </div>
+          <div class="spec-list" id="specList"></div>
+          <div class="note">Это предварительная конфигурация. Точную стоимость с учётом актуальных цен и наличия менеджер рассчитает и пришлёт вам в WhatsApp.</div>
+          <a class="btn wa lg" id="buildWa" href="#" target="_blank" rel="noopener">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M.5 23.5l1.65-6a11.5 11.5 0 1 1 4.3 4.2L.5 23.5zM6.7 19.3l.37.22a9.6 9.6 0 1 0-3.23-3.16l.24.38-1 3.6 3.62-1.04z"/></svg>
+            Узнать стоимость в WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== О НАС ====== -->
+  <section id="onas" class="block">
+    <div class="wrap">
+      <div class="about-grid">
+        <div>
+          <p class="eyebrow">О нас</p>
+          <h2 class="h-sec">Мастер, которому доверяют технику</h2>
+          <p class="sub" id="aboutText">Сервис ведёт мастер с высшим образованием в области программирования и многолетним опытом ремонта и сборки компьютерной техники. Мы одинаково уверенно работаем и с «железом», и с программной частью — от замены матрицы до тонкой настройки системы.</p>
+          <div class="trust">
+            <div class="t">
+              <svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
+              <h4>Гарантия на работы</h4><p>Отвечаем за результат и даём гарантию на выполненный ремонт</p>
+            </div>
+            <div class="t">
+              <svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+              <h4>Высшее образование</h4><p>Профильная подготовка по программированию и глубокое знание систем</p>
+            </div>
+            <div class="t">
+              <svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              <h4>Честные сроки</h4><p>Называем реальные сроки и цену до начала работ, без сюрпризов</p>
+            </div>
+            <div class="t">
+              <svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <h4>Индивидуальный подход</h4><p>Подберём решение под вашу задачу и бюджет, а не навяжем лишнее</p>
+            </div>
+          </div>
+        </div>
+        <div class="master-card">
+          <div class="master-stats">
+            <div class="ms"><b>100%</b><span>честная диагностика</span></div>
+            <div class="ms"><b>ПК+ПО</b><span>железо и софт</span></div>
+            <div class="ms"><b>WhatsApp</b><span>быстрая связь</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== КОНТАКТЫ ====== -->
+  <section id="kontakty" class="block">
+    <div class="wrap">
+      <p class="eyebrow">Контакты</p>
+      <h2 class="h-sec">Как нас найти</h2>
+      <div class="contact-grid" style="margin-top:22px">
+        <div class="glass contact-card" style="padding:24px">
+          <div class="row">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <div class="rt"><div class="k">Адрес</div><div class="v">г. Махачкала, ул. Амет-Хана Султана, 2б/3</div>
+              <a class="btn ghost" style="margin-top:8px; padding:.5em 1em; font-size:.85rem" target="_blank" rel="noopener" href="https://yandex.ru/maps/?text=Махачкала%2C%20Амет-Хана%20Султана%202б%2F3">Открыть на карте</a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></div>
+            <div class="rt"><div class="k">Телефон</div><div class="v"><a href="tel:+79034771806" id="phoneText">+7 903 477-18-06</a><button class="copy" data-copy="+79034771806">копировать</button></div></div>
+          </div>
+          <div class="row">
+            <div class="ic" style="background:linear-gradient(140deg,rgba(37,211,102,.14),rgba(18,161,80,.18)); color:#12a150"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M.5 23.5l1.65-6a11.5 11.5 0 1 1 4.3 4.2L.5 23.5zM6.7 19.3l.37.22a9.6 9.6 0 1 0-3.23-3.16l.24.38-1 3.6 3.62-1.04zM17.5 14.1c-.23-.12-1.37-.68-1.58-.76-.21-.08-.37-.12-.52.12-.15.23-.6.76-.73.92-.14.15-.27.17-.5.06-.23-.12-.98-.36-1.87-1.15-.69-.62-1.16-1.38-1.3-1.61-.13-.23-.01-.36.1-.47.1-.1.23-.27.34-.4.12-.14.15-.23.23-.39.08-.15.04-.29-.02-.4-.06-.12-.52-1.26-.72-1.72-.19-.45-.38-.39-.52-.4h-.45c-.15 0-.4.06-.6.29-.21.23-.8.78-.8 1.92 0 1.13.82 2.22.94 2.38.11.15 1.6 2.45 3.88 3.44.54.23.96.37 1.29.48.54.17 1.03.15 1.42.09.43-.06 1.37-.56 1.56-1.1.19-.54.19-1 .14-1.1-.06-.1-.21-.16-.44-.28z"/></svg></div>
+            <div class="rt"><div class="k">WhatsApp</div><div class="v">Пишите в любое время</div>
+              <a class="btn wa" style="margin-top:8px" id="contactWa" target="_blank" rel="noopener" href="#">Написать в WhatsApp</a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+            <div class="rt"><div class="k">Режим работы</div><div class="v" id="hoursText">Ежедневно, 10:00 – 20:00</div></div>
+          </div>
+        </div>
+
+        <div class="glass" style="padding:24px; display:flex; flex-direction:column; justify-content:center">
+          <h3 style="font-size:1.25rem; margin-bottom:8px">Нужна консультация?</h3>
+          <p class="sub" style="margin-bottom:16px">Подскажем по товару, ремонту или сборке. Самый быстрый способ — WhatsApp по номеру телефона.</p>
+          <a class="btn wa lg block" id="contactWa2" target="_blank" rel="noopener" href="#">Открыть WhatsApp</a>
+          <a class="btn ghost lg block" style="margin-top:10px" href="#sborka">Собрать ПК онлайн</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot-inner">
+        <img src="/img/logo.png" alt="AMD-05">
+        <div class="foot-links">
+          <a href="#tovary">Товары</a><a href="#remont">Ремонт</a><a href="#sborka">Собрать ПК</a>
+          <a href="#onas">О нас</a><a href="#kontakty">Контакты</a>
+        </div>
+        <button class="admin-link" id="adminOpen">Вход для администратора</button>
+      </div>
+      <p style="color:var(--muted-2); font-size:.8rem; margin-top:14px">© <span id="yr"></span> AMD-05 · Компьютерная техника, ремонт и сборка ПК · Махачкала</p>
+      <p id="legalReq" style="color:var(--muted-2); font-size:.8rem; margin-top:4px; display:none"></p>
+      <div class="legal-links">
+        <a href="/privacy.html">Политика конфиденциальности</a>
+        <a href="/consent.html">Согласие на обработку данных</a>
+        <a href="/terms.html">Условия заказа, гарантия и возврат</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+
+
+<div class="modal" id="lightbox" role="dialog" aria-modal="true" aria-label="Фото товара">
+  <div class="lb">
+    <button class="x lbx" id="lbClose" aria-label="Закрыть">✕</button>
+    <button class="lbn prev" id="lbPrev" aria-label="Назад">‹</button>
+    <img id="lbImg" alt="">
+    <button class="lbn next" id="lbNext" aria-label="Вперёд">›</button>
+  </div>
+</div>
+
+<!-- ====== АДМИН-МОДАЛКА ====== -->
+<div class="modal" id="adminModal" role="dialog" aria-modal="true" aria-label="Панель администратора">
+  <div class="panel wide">
+    <div class="phead">
+      <div>
+        <h3>Панель администратора</h3>
+        <div class="pstate" id="pState"></div>
+      </div>
+      <div class="phact">
+        <button class="btn ghost sm" id="pDiscard" type="button" hidden>Отменить правки</button>
+        <button class="btn sm" id="pPublish" type="button" hidden disabled>Опубликовать для всех</button>
+        <button class="x" id="adminClose" type="button" aria-label="Закрыть">✕</button>
+      </div>
+    </div>
+    <div class="pbody">
+      <div id="adminLogin">
+        <p class="sub" style="margin-top:0">Введите пароль, чтобы управлять каталогом.</p>
+        <div class="field">
+          <label for="admPass">Пароль</label>
+          <input class="input" id="admPass" type="password" placeholder="Пароль администратора" autocomplete="current-password">
+          <div class="err" id="passErr">Неверный пароль</div>
+        </div>
+        <button class="btn block" id="admLoginBtn" type="button">Войти</button>
+      </div>
+
+      <div id="adminArea" hidden>
+        <div class="admin-status" id="admStatus"></div>
+        <div class="tabs">
+          <button type="button" class="active" data-tab="prod">Товары</button>
+          <button type="button" data-tab="cat">Категории</button>
+          <button type="button" data-tab="info">О нас и контакты</button>
+          <button type="button" data-tab="sec">Пароль</button>
+        </div>
+
+        <div data-pane="prod">
+          <button class="btn sm" id="pNew" type="button">＋ Новый товар</button>
+
+          <div class="aform" id="pForm" hidden>
+            <h4 id="pFormTitle">Новый товар</h4>
+            <input type="hidden" id="pId">
+            <div class="row2">
+              <div class="field"><label for="pName">Название <span class="req">*</span></label><input class="input" id="pName" placeholder="Например: Монитор Acer 24″"></div>
+              <div class="field"><label for="pCat">Категория</label><select class="input" id="pCat"></select></div>
+            </div>
+            <div class="row2">
+              <div class="field"><label for="pPrice">Цена</label><input class="input" id="pPrice" placeholder="Например: 9 500 ₽ (можно оставить пустым)"></div>
+              <div class="field"><label>Наличие</label><label class="check" style="margin-top:10px"><input type="checkbox" id="pStock" checked> В наличии</label></div>
+            </div>
+            <div class="field">
+              <label for="pTags">Метки (характеристики через запятую)</label>
+              <input class="input" id="pTags" placeholder="27″, IPS, 144 Гц, Full HD">
+              <div class="tagprev chips" id="pTagsPrev"></div>
+            </div>
+            <div class="field">
+              <label for="pNote">Описание</label>
+              <textarea class="input" id="pNote" style="min-height:90px" placeholder="Короткое описание под метками"></textarea>
+            </div>
+            <div class="field">
+              <label>Фото (первое — главное, до 8 штук)</label>
+              <label class="drop" for="pFiles">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5-5 5 5"/><path d="M12 5v12"/></svg>
+                <div style="font-weight:600">Нажмите, чтобы добавить фото</div>
+                <div class="hint">JPG или PNG, можно выбрать сразу несколько. Фото сжимаются автоматически.</div>
+              </label>
+              <input id="pFiles" type="file" accept="image/*" multiple hidden>
+              <div class="aimgs" id="pImgs"></div>
+            </div>
+            <div class="fmsg" id="pFormErr" role="alert"></div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:8px">
+              <button class="btn" id="pSave" type="button">Сохранить товар</button>
+              <button class="btn ghost" id="pCancel" type="button">Отмена</button>
+            </div>
+          </div>
+
+          <div class="adm-list" id="admProdList"></div>
+        </div>
+
+        <div data-pane="cat" hidden>
+          <div class="field"><label for="cName">Новая категория</label><input class="input" id="cName" placeholder="Например: Видеокарты"></div>
+          <button class="btn sm" id="cAdd" type="button">Добавить категорию</button>
+          <p class="hint" style="margin-top:12px">Название можно править прямо в списке. Удалить категорию можно, когда в ней нет товаров.</p>
+          <div class="adm-list" id="admCatList"></div>
+        </div>
+
+        <div data-pane="info" hidden>
+          <div class="field"><label for="iAbout">Текст раздела «О нас»</label><textarea class="input" id="iAbout"></textarea></div>
+          <div class="row2">
+            <div class="field"><label for="iHours">Режим работы</label><input class="input" id="iHours"></div>
+            <div class="field"><label for="iAddr">Адрес</label><input class="input" id="iAddr"></div>
+          </div>
+          <button class="btn sm" id="iSave" type="button">Сохранить</button>
+        </div>
+
+        <div data-pane="sec" hidden>
+          <p class="sub" style="margin-top:0">Пароль хранится на сервере Netlify, а не в коде сайта.</p>
+          <p class="hint" style="font-size:.9rem; line-height:1.6; margin-top:10px">Чтобы сменить пароль: Netlify → ваш сайт → Project configuration → Environment variables → переменная <b>ADMIN_PASSWORD</b> → изменить значение → Deploys → Trigger deploy → Deploy site.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== ДАННЫЕ КАТАЛОГА<!-- ====== ДАННЫЕ КАТАЛОГА (источник правды) ====== -->
+<script id="store-data" type="application/json">{
+ "meta": {
+  "updatedAt": 1
+ },
+ "info": {
+  "about": "Сервис ведёт мастер с высшим образованием в области программирования и многолетним опытом ремонта и сборки компьютерной техники. Мы одинаково уверенно работаем и с «железом», и с программной частью — от замены матрицы до тонкой настройки системы.",
+  "hours": "Ежедневно, 10:00 – 20:00",
+  "address": "г. Махачкала, ул. Амет-Хана Султана, 2б/3"
+ },
+ "categories": [
+  {
+   "id": "pc",
+   "name": "Компьютеры"
+  },
+  {
+   "id": "laptop",
+   "name": "Ноутбуки"
+  },
+  {
+   "id": "monitor",
+   "name": "Мониторы"
+  },
+  {
+   "id": "components",
+   "name": "Комплектующие"
+  },
+  {
+   "id": "periph",
+   "name": "Мышки и клавиатуры"
+  },
+  {
+   "id": "audio",
+   "name": "Наушники"
+  },
+  {
+   "id": "storage",
+   "name": "Накопители"
+  },
+  {
+   "id": "access",
+   "name": "Аксессуары"
+  }
+ ],
+ "products": [
+  {
+   "id": "mon-hisense",
+   "cat": "monitor",
+   "name": "Hisense 27N3Q",
+   "price": "9 500 ₽",
+   "desc": "27″ · IPS · 144 Гц · Full HD",
+   "note": "Яркая IPS-матрица и частота 144 Гц для комфортной работы и игр.",
+   "stock": true,
+   "imgs": [
+    "/img/mon-hisense-1.jpg"
+   ]
+  },
+  {
+   "id": "mon-nitro",
+   "cat": "monitor",
+   "name": "Acer Nitro KG272P6bip",
+   "price": "10 000 ₽",
+   "desc": "27″ · IPS · 144 Гц · Full HD · Игровой",
+   "note": "Игровой монитор с Adaptive Sync без разрывов изображения и цветовым охватом 90% DCI-P3.",
+   "stock": true,
+   "imgs": [
+    "/img/mon-nitro-1.jpg",
+    "/img/mon-nitro-2.jpg"
+   ]
+  },
+  {
+   "id": "mon-aiwa",
+   "cat": "monitor",
+   "name": "Aiwa MD2410",
+   "price": "8 000 ₽",
+   "desc": "24″ · IPS · 180 Гц · Full HD",
+   "note": "Тонкие рамки, HDMI и DisplayPort, USB-порт и встроенные динамики.",
+   "stock": true,
+   "imgs": [
+    "/img/mon-aiwa-1.jpg",
+    "/img/mon-aiwa-2.jpg",
+    "/img/mon-aiwa-3.jpg",
+    "/img/mon-aiwa-4.jpg",
+    "/img/mon-aiwa-5.jpg"
+   ]
+  },
+  {
+   "id": "mon-acer",
+   "cat": "monitor",
+   "name": "Acer SA243YP1bi",
+   "price": "7 500 ₽",
+   "desc": "24″ · IPS · 144 Гц · Full HD",
+   "note": "Тонкие рамки, IPS-матрица и частота 144 Гц для работы и игр.",
+   "stock": true,
+   "imgs": [
+    "/img/mon-acer-1.jpg",
+    "/img/mon-acer-2.jpg",
+    "/img/mon-acer-3.jpg"
+   ]
+  }
+ ]
+}</script>
+
+<script>
+(function(){
+  "use strict";
+  var WA = "79034771806";
+  function waLink(text){ return "https://wa.me/" + WA + "?text=" + encodeURIComponent(text); }
+  function qs(s,r){ return (r||document).querySelector(s); }
+  function qsa(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); }
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];}); }
+
+  /* -------- 3D кубическая матрица: фон всей страницы, двигается при прокрутке -------- */
+  (function matrix(){
+    var cv=document.getElementById("matrix"); if(!cv||typeof THREE==="undefined") return;
+    var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var renderer;
+    try{ renderer=new THREE.WebGLRenderer({canvas:cv, alpha:true, antialias:true}); }catch(e){ return; }
+    renderer.setClearColor(0x000000,0);
+    var scene=new THREE.Scene();
+    var camera=new THREE.PerspectiveCamera(58,1,0.1,200);
+    camera.position.set(0,0,15);
+    var group=new THREE.Group(); scene.add(group);
+
+    var NX=9, NY=12, NZ=5, GAP=2.5, S=1.5;
+    var C=[[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]];
+    var E=[[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+    var verts=[], pts=[];
+    for(var ix=0;ix<NX;ix++)for(var iy=0;iy<NY;iy++)for(var iz=0;iz<NZ;iz++){
+      var cx=(ix-(NX-1)/2)*GAP, cy=(iy-(NY-1)/2)*GAP, cz=(iz-(NZ-1)/2)*GAP;
+      for(var k=0;k<E.length;k++){
+        var A=C[E[k][0]], B=C[E[k][1]];
+        verts.push(cx+A[0]*S/2,cy+A[1]*S/2,cz+A[2]*S/2, cx+B[0]*S/2,cy+B[1]*S/2,cz+B[2]*S/2);
+      }
+      for(var q=0;q<8;q++){ pts.push(cx+C[q][0]*S/2,cy+C[q][1]*S/2,cz+C[q][2]*S/2); }
+    }
+    var lg=new THREE.BufferGeometry(); lg.setAttribute("position",new THREE.BufferAttribute(new Float32Array(verts),3));
+    group.add(new THREE.LineSegments(lg,new THREE.LineBasicMaterial({color:0xe4002b,transparent:true,opacity:0.12})));
+    var pg=new THREE.BufferGeometry(); pg.setAttribute("position",new THREE.BufferAttribute(new Float32Array(pts),3));
+    group.add(new THREE.Points(pg,new THREE.PointsMaterial({color:0xff2d6a,size:0.11,transparent:true,opacity:0.26,sizeAttenuation:true})));
+
+    function resize(){
+      var w=window.innerWidth, h=window.innerHeight;
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.6));
+      renderer.setSize(w,h,false);
+      camera.aspect=w/h; camera.updateProjectionMatrix();
+    }
+    resize(); window.addEventListener("resize",resize);
+
+    function scrollProgress(){
+      var max=Math.max(1,(document.documentElement.scrollHeight||document.body.scrollHeight)-window.innerHeight);
+      var y=window.pageYOffset||document.documentElement.scrollTop||0;
+      return Math.min(1,Math.max(0,y/max));
+    }
+    var sp=scrollProgress(), target=sp, running=true, t0=Date.now();
+    window.addEventListener("scroll",function(){ target=scrollProgress(); },{passive:true});
+
+    function place(t){
+      // прокрутка двигает матрицу: камера плывёт вдоль неё, поворот и сдвиг по вертикали
+      group.rotation.y=0.55+sp*Math.PI*0.7+t*0.12;
+      group.rotation.x=0.38+Math.sin(sp*Math.PI*2)*0.14+Math.sin(t*0.3)*0.03;
+      group.position.y=-sp*8;
+      group.position.x=Math.sin(sp*Math.PI*2)*1.6;
+      camera.position.z=15-Math.sin(sp*Math.PI)*3.5;
+    }
+    function frame(){
+      if(!running) return;
+      sp+=(target-sp)*0.025;
+      place((Date.now()-t0)*0.0004);
+      renderer.render(scene,camera);
+      requestAnimationFrame(frame);
+    }
+    if(reduce){
+      place(0); renderer.render(scene,camera);
+      window.addEventListener("scroll",function(){ sp=target; place(0); renderer.render(scene,camera); },{passive:true});
+    } else {
+      requestAnimationFrame(frame);
+      document.addEventListener("visibilitychange",function(){ running=!document.hidden; if(running) requestAnimationFrame(frame); });
+    }
+  })();
+
+  /* -------- состояние каталога -------- */
+  var FALLBACK = {meta:{updatedAt:0}, info:{about:"",hours:"",address:""}, categories:[], products:[]};
+  var DIRTY = false, READY = false, onStoreReplaced = null;
+  function normalizeStore(b){
+    b.meta = b.meta||{updatedAt:0};
+    b.info = b.info||{about:"",hours:"",address:""};
+    b.categories = b.categories||[];
+    b.products = b.products||[];
+    return b;
+  }
+  function loadStore(){
+    var base = null;
+    try{ base = JSON.parse(document.getElementById("store-data").textContent); }catch(e){}
+    if(!base) base = JSON.parse(JSON.stringify(FALLBACK));
+    var baseUpdated = (base.meta && base.meta.updatedAt) || 0;
+    DIRTY = false;
+    try{
+      var ls = JSON.parse(localStorage.getItem("amd05_store")||"null");
+      if(ls && ls.meta && (ls.meta.updatedAt||0) > baseUpdated){ base = ls; DIRTY = true; }
+      else if(ls){ localStorage.removeItem("amd05_store"); }
+    }catch(e){}
+    return normalizeStore(base);
+  }
+  var STORE = loadStore();
+  /* актуальный каталог берём с сервера Netlify; стартовые данные из страницы нужны, пока сервер пуст или недоступен */
+  function syncRemote(force){
+    return fetch("/api/catalog",{cache:"no-store"})
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .catch(function(){ return null; })
+      .then(function(r){
+        READY = true;
+        if(r && r.meta && Array.isArray(r.products)){
+          if(force || !DIRTY || (r.meta.updatedAt||0) >= (STORE.meta.updatedAt||0)){
+            STORE = normalizeStore(r); DIRTY = false;
+            try{ localStorage.removeItem("amd05_store"); }catch(e){}
+          }
+        }
+        renderAll();
+        if(onStoreReplaced) onStoreReplaced();
+      });
+  }
+  var activeCat = "all";
+  var searchQ = "";
+
+  /* -------- иконки категорий (простые глифы) -------- */
+  function catIcon(id){
+    var common = 'fill="none" stroke="#b00028" stroke-width="1.4"';
+    var map = {
+      pc:'<rect x="4" y="3" width="16" height="13" rx="2"/><path d="M8 20h8M12 16v4"/>',
+      laptop:'<rect x="3" y="5" width="18" height="11" rx="1.5"/><path d="M2 20h20"/>',
+      monitor:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M9 20h6M12 16v4"/>',
+      components:'<rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M10 3v3M14 3v3M10 18v3M14 18v3M3 10h3M3 14h3M18 10h3M18 14h3"/>',
+      periph:'<path d="M12 3a5 5 0 0 1 5 5v6a5 5 0 0 1-10 0V8a5 5 0 0 1 5-5zM12 6v4"/>',
+      audio:'<path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="2" y="13" width="4" height="7" rx="1.5"/><rect x="18" y="13" width="4" height="7" rx="1.5"/>',
+      storage:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16"/>',
+      access:'<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8L12 21.2l8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/>'
+    };
+    return '<svg class="gi" viewBox="0 0 24 24" '+common+'>'+(map[id]||map.access)+'</svg>';
+  }
+  var CATCOLORS = {
+    pc:["#ffd0e0","#ff9ebf"], laptop:["#ffe0cf","#ffb59a"], monitor:["#ffd4ec","#ff9ed4"],
+    components:["#ffd9d0","#ff9e8f"], periph:["#ffe4d6","#ffc29e"], audio:["#f4d6ff","#d79eff"],
+    storage:["#ffd0d9","#ff9eb0"], access:["#ffe8d0","#ffce8f"]
+  };
+  function catName(id){ for(var i=0;i<STORE.categories.length;i++){ if(STORE.categories[i].id===id) return STORE.categories[i].name; } return "Товар"; }
+
+  /* -------- рендер каталога -------- */
+  function renderCatBar(){
+    var bar = document.getElementById("catBar"); if(!bar) return;
+    var html = '<button class="cat-pill '+(activeCat==="all"?"active":"")+'" data-cat="all">Все товары</button>';
+    STORE.categories.forEach(function(c){
+      html += '<button class="cat-pill '+(activeCat===c.id?"active":"")+'" data-cat="'+esc(c.id)+'">'+esc(c.name)+'</button>';
+    });
+    bar.innerHTML = html;
+    qsa(".cat-pill", bar).forEach(function(b){
+      b.addEventListener("click", function(){ activeCat=b.getAttribute("data-cat"); renderCatBar(); renderCatalog(); });
+    });
+  }
+  var lbS={imgs:[],i:0};
+  function lbShow(){ document.getElementById("lbImg").src=lbS.imgs[lbS.i]; }
+  function openLb(imgs,i){ lbS.imgs=imgs; lbS.i=i; lbShow(); document.getElementById("lightbox").classList.add("open"); }
+  (function(){
+    var m=document.getElementById("lightbox");
+    document.getElementById("lbClose").addEventListener("click",function(){ m.classList.remove("open"); });
+    m.addEventListener("click",function(e){ if(e.target===m) m.classList.remove("open"); });
+    document.getElementById("lbPrev").addEventListener("click",function(){ lbS.i=(lbS.i-1+lbS.imgs.length)%lbS.imgs.length; lbShow(); });
+    document.getElementById("lbNext").addEventListener("click",function(){ lbS.i=(lbS.i+1)%lbS.imgs.length; lbShow(); });
+    document.addEventListener("keydown",function(e){ if(!m.classList.contains("open")) return; if(e.key==="Escape") m.classList.remove("open"); if(e.key==="ArrowLeft") document.getElementById("lbPrev").click(); if(e.key==="ArrowRight") document.getElementById("lbNext").click(); });
+  })();
+  function mediaHtml(p){
+    if(!p.imgs||!p.imgs.length) return catIcon(p.cat);
+    var h='<img class="pimg" src="'+p.imgs[0]+'" alt="'+esc(p.name)+'">';
+    if(p.imgs.length>1){
+      h+='<div class="thumbs">'+p.imgs.map(function(s,i){ return '<button type="button" class="tb'+(i===0?" on":"")+'" data-i="'+i+'" aria-label="Фото '+(i+1)+'"><img src="'+s+'" alt=""></button>'; }).join("")+'</div>';
+    }
+    return h;
+  }
+  function descHtml(p){
+    var h="";
+    if(p.desc){ h+='<div class="chips">'+p.desc.split(" · ").map(function(s){ return '<span>'+esc(s)+'</span>'; }).join("")+'</div>'; }
+    if(p.note){ h+='<div class="note">'+esc(p.note)+'</div>'; }
+    return h;
+  }
+  function renderCatalog(){
+    var grid = document.getElementById("catalog"); if(!grid) return;
+    if(!READY && !DIRTY){ grid.innerHTML = '<div class="empty-note">Загружаем товары…</div>'; return; }
+    var items = STORE.products.filter(function(p){
+      var okCat = activeCat==="all" || p.cat===activeCat;
+      var hay = (p.name+" "+(p.desc||"")+" "+catName(p.cat)).toLowerCase();
+      var okQ = !searchQ || hay.indexOf(searchQ)>=0;
+      return okCat && okQ;
+    });
+    if(!items.length){
+      var m0 = (STORE.products.length===0)
+        ? 'Каталог пополняется — товары скоро появятся здесь. Нужна конкретная позиция? Свяжитесь с нами в разделе «Контакты».'
+        : 'По вашему запросу ничего не найдено.';
+      grid.innerHTML = '<div class="empty-note">'+m0+'</div>'; return;
+    }
+    grid.innerHTML = items.map(function(p){
+      var col = CATCOLORS[p.cat]||["#ffd0e0","#ff9ebf"];
+      var priceHtml = p.price ? '<span class="price">'+esc(p.price)+'</span>' : '<span class="price na">Цена по запросу</span>';
+      var msg = "Здравствуйте! Интересует товар: "+p.name+(p.price?(" ("+p.price+")"):"")+". Подскажите, пожалуйста, по наличию и цене.";
+      return '<article class="card" data-pid="'+esc(p.id)+'">'+
+        '<div class="thumb">'+
+          '<span class="tag">'+esc(catName(p.cat))+'</span>'+
+          '<span class="stock '+(p.stock?"in":"out")+'">'+(p.stock?"В наличии":"Под заказ")+'</span>'+
+          mediaHtml(p)+
+        '</div>'+
+        '<div class="body">'+
+          '<h3>'+esc(p.name)+'</h3>'+
+          descHtml(p)+
+          '<div class="foot">'+priceHtml+'<a class="mini" target="_blank" rel="noopener" href="'+waLink(msg)+'">Купить</a></div>'+
+        '</div>'+
+      '</article>';
+    }).join("");
+    qsa(".card[data-pid]",grid).forEach(function(card){
+      var pr=null; STORE.products.forEach(function(x){ if(x.id===card.getAttribute("data-pid")) pr=x; });
+      if(!pr||!pr.imgs||!pr.imgs.length) return;
+      var main=qs(".pimg",card), cur=0, tbs=qsa(".tb",card);
+      tbs.forEach(function(b){ b.addEventListener("click",function(){ cur=+b.getAttribute("data-i"); main.src=pr.imgs[cur]; tbs.forEach(function(x){ x.classList.toggle("on",x===b); }); }); });
+      main.addEventListener("click",function(){ openLb(pr.imgs,cur); });
+    });
+  }
+  function renderInfo(){
+    var a = document.getElementById("aboutText"); if(a && STORE.info.about) a.textContent = STORE.info.about;
+    var h = document.getElementById("hoursText"); if(h && STORE.info.hours) h.textContent = STORE.info.hours;
+    var addr = document.querySelector("#kontakty .row .v"); // первый адрес
+    if(STORE.info.address){
+      var vEls = qsa("#kontakty .contact-card .rt .v");
+      if(vEls[0]) vEls[0].textContent = STORE.info.address;
+    }
+  }
+  function renderAll(){ renderCatBar(); renderCatalog(); renderInfo(); }
+
+  /* -------- поиск -------- */
+  var searchEl = document.getElementById("prodSearch");
+  if(searchEl) searchEl.addEventListener("input", function(){ searchQ=this.value.trim().toLowerCase(); renderCatalog(); });
+
+  /* -------- WhatsApp-ссылки -------- */
+  (function(){
+    var greet = "Здравствуйте! Пишу с сайта AMD-05.";
+    ["contactWa","contactWa2"].forEach(function(id){
+      var el=document.getElementById(id); if(el) el.href = waLink(greet);
+    });
+  })();
+
+  /* -------- мобильное меню -------- */
+  (function(){
+    var btn=document.getElementById("menuBtn"), links=document.getElementById("navlinks");
+    if(btn&&links){
+      btn.addEventListener("click", function(){ links.classList.toggle("open"); });
+      qsa("a",links).forEach(function(a){ a.addEventListener("click", function(){ links.classList.remove("open"); }); });
+    }
+  })();
+
+  /* -------- копирование -------- */
+  qsa(".copy").forEach(function(b){
+    b.addEventListener("click", function(){
+      var t=b.getAttribute("data-copy"), old=b.textContent;
+      function done(){ b.textContent="скопировано"; setTimeout(function(){ b.textContent=old; },1400); }
+      try{
+        if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(done,function(){ fallback(); }); }
+        else fallback();
+      }catch(e){ fallback(); }
+      function fallback(){ var ta=document.createElement("textarea"); ta.value=t; document.body.appendChild(ta); ta.select(); try{document.execCommand("copy");}catch(e){} document.body.removeChild(ta); done(); }
+    });
+  });
+
+  /* -------- форма ремонта -------- */
+  (function(){
+    var form=document.getElementById("repairForm"); if(!form) return;
+    var photos=[], fileIn=document.getElementById("rPhoto"), prev=document.getElementById("rPreviews"), hint=document.getElementById("photoHint");
+    var submit=document.getElementById("repairSubmit");
+    fileIn.addEventListener("change", function(){
+      Array.prototype.forEach.call(fileIn.files, function(f){
+        if(f.type.indexOf("image")!==0) return;
+        var rd=new FileReader(); rd.onload=function(e){ photos.push(e.target.result); drawPrev(); }; rd.readAsDataURL(f);
+      });
+      fileIn.value="";
+    });
+    function drawPrev(){
+      prev.innerHTML = photos.map(function(src,i){ return '<div class="pv"><img src="'+src+'" alt=""><button type="button" data-i="'+i+'">✕</button></div>'; }).join("");
+      hint.style.display = photos.length ? "block" : "none";
+      qsa("button",prev).forEach(function(b){ b.addEventListener("click", function(){ photos.splice(+b.getAttribute("data-i"),1); drawPrev(); }); });
+    }
+    function val(id){ return (document.getElementById(id).value||"").trim(); }
+    function setInvalid(id,bad){ document.getElementById(id).closest(".field").classList.toggle("invalid",bad); }
+    function buildMsg(){
+      var m="🛠 Заявка на ремонт (с сайта AMD-05)\n\n";
+      if(val("rName")) m+="Имя: "+val("rName")+"\n";
+      m+="Устройство: "+(val("rDevice")||"—")+"\n";
+      m+="Проблема: "+(val("rProblem")||"—")+"\n";
+      m+="Телефон: "+(val("rPhone")||"—")+"\n";
+      if(photos.length) m+="\n📎 Приложу "+photos.length+" фото в этом чате.";
+      return m;
+    }
+    function refresh(){ submit.href = waLink(buildMsg()); }
+    ["rName","rDevice","rProblem","rPhone"].forEach(function(id){ document.getElementById(id).addEventListener("input", refresh); });
+    refresh();
+    submit.addEventListener("click", function(e){
+      var bad=false;
+      [["rDevice"],["rProblem"],["rPhone"]].forEach(function(p){ var v=val(p[0])===""; setInvalid(p[0],v); if(v)bad=true; });
+      var noConsent=!document.getElementById("rConsent").checked; setInvalid("rConsent",noConsent); if(noConsent)bad=true;
+      if(bad){ e.preventDefault(); var f=qs(".field.invalid"); if(f) f.scrollIntoView({behavior:"smooth",block:"center"}); return; }
+      refresh();
+    });
+  })();
+
+  /* -------- конфигуратор ПК -------- */
+  (function(){
+    var btn=document.getElementById("buildBtn"); if(!btn) return;
+    var scan=document.getElementById("scan"), bar=document.getElementById("scanBar"), term=document.getElementById("scanTerm");
+    var result=document.getElementById("result"), specList=document.getElementById("specList"), waBtn=document.getElementById("buildWa");
+    function pick(id){ var s=document.getElementById(id); return s.options[s.selectedIndex].text; }
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    btn.addEventListener("click", function(){
+      var cfg={
+        "Назначение":pick("bUse"),"Процессор":pick("bCpu"),"Видеокарта":pick("bGpu"),
+        "Оперативная память":pick("bRam"),"Накопитель":pick("bStorage"),"Монитор":pick("bMon")
+      };
+      result.classList.remove("show");
+      scan.classList.add("show"); term.innerHTML=""; bar.style.width="0";
+      scan.scrollIntoView({behavior:reduce?"auto":"smooth", block:"center"});
+      var lines=[
+        "▸ Инициализация подбора…",
+        "▸ Анализ назначения: "+cfg["Назначение"],
+        "▸ Проверка совместимости CPU и платформы: "+cfg["Процессор"],
+        "▸ Подбор видеокарты: "+cfg["Видеокарта"],
+        "▸ Расчёт блока питания и охлаждения…",
+        "▸ Память и накопитель: "+cfg["Оперативная память"]+" · "+cfg["Накопитель"],
+        "✓ Конфигурация собрана и проверена"
+      ];
+      var step=0;
+      function next(){
+        if(step<lines.length){
+          var cls = lines[step].indexOf("✓")===0 ? "ln ok" : "ln";
+          var d=document.createElement("div"); d.className=cls; d.style.animationDelay="0s"; d.textContent=lines[step];
+          term.appendChild(d);
+          bar.style.width = Math.round(((step+1)/lines.length)*100)+"%";
+          step++;
+          setTimeout(next, reduce?60:360);
+        } else {
+          setTimeout(show, reduce?80:420);
+        }
+      }
+      function show(){
+        scan.classList.remove("show");
+        specList.innerHTML = Object.keys(cfg).map(function(k){
+          return '<div class="spec-item"><div class="k">'+k+'</div><div class="v">'+esc(cfg[k])+'</div></div>';
+        }).join("");
+        var msg="🖥 Заявка на сборку ПК (с сайта AMD-05)\n\n"+Object.keys(cfg).map(function(k){return k+": "+cfg[k];}).join("\n")+"\n\nПодскажите, пожалуйста, итоговую стоимость и сроки.";
+        waBtn.href = waLink(msg);
+        result.classList.add("show");
+        result.scrollIntoView({behavior:reduce?"auto":"smooth", block:"center"});
+      }
+      next();
+    });
+  })();
+
+  /* -------- админ-панель (пароль проверяет сервер Netlify) -------- */
+  (function(){
+    var API="/api/admin", pw="";
+    try{ pw=sessionStorage.getItem("amd05_pw")||""; }catch(e){}
+    var modal=document.getElementById("adminModal");
+    var loginBox=document.getElementById("adminLogin"), area=document.getElementById("adminArea");
+    var statusEl=document.getElementById("admStatus"), stateEl=document.getElementById("pState");
+    var pubBtn=document.getElementById("pPublish"), discBtn=document.getElementById("pDiscard");
+    var form=document.getElementById("pForm"), formErr=document.getElementById("pFormErr");
+    var formImgs=[], draftFailed=false, statusTimer=null, busy=false;
+
+    function val(id){ return (document.getElementById(id).value||"").trim(); }
+    function setStatus(msg,kind){
+      statusEl.textContent=msg; statusEl.className="admin-status show "+(kind||"");
+      clearTimeout(statusTimer);
+      if(kind==="ok") statusTimer=setTimeout(function(){ statusEl.classList.remove("show"); },7000);
+    }
+    function api(body){
+      return fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(Object.assign({password:pw},body))})
+        .then(function(r){
+          return r.json().catch(function(){ return {}; }).then(function(j){
+            if(!r.ok){ var e=new Error(j.error||("http_"+r.status)); e.status=r.status; e.code=j.error; throw e; }
+            return j;
+          });
+        });
+    }
+    function explain(e){
+      if(e.status===401) return "Неверный пароль.";
+      if(e.code==="not_configured") return "На сервере не задан пароль. В Netlify добавьте переменную ADMIN_PASSWORD и запустите Deploy.";
+      if(e.status===404||e.status===0||e.name==="TypeError") return "Сервер недоступен. Проверьте, что сайт развёрнут на Netlify вместе с функциями.";
+      if(e.status===413||e.code==="too_large") return "Файл слишком большой. Выберите фото поменьше.";
+      return "Не удалось выполнить действие ("+(e.code||e.message)+"). Попробуйте ещё раз.";
+    }
+
+    /* ---- черновик ---- */
+    function markDirty(){
+      DIRTY=true; STORE.meta.updatedAt=Date.now();
+      try{ localStorage.setItem("amd05_store",JSON.stringify(STORE)); draftFailed=false; }catch(e){ draftFailed=true; }
+      renderAll(); renderAdmin();
+    }
+    function updateHeader(){
+      stateEl.textContent = DIRTY ? "Есть неопубликованные изменения" : "Всё опубликовано";
+      stateEl.className="pstate "+(DIRTY?"dirty":"clean");
+      pubBtn.disabled=busy||!DIRTY; discBtn.hidden=!DIRTY;
+    }
+    discBtn.addEventListener("click",function(){
+      try{ localStorage.removeItem("amd05_store"); }catch(e){}
+      STORE=loadStore(); closeForm();
+      syncRemote(true).then(function(){ setStatus("Неопубликованные правки отменены.","ok"); });
+    });
+
+    /* ---- публикация для всех ---- */
+    async function publish(){
+      if(!DIRTY||busy) return;
+      busy=true; updateHeader();
+      try{
+        var pending=[];
+        STORE.products.forEach(function(p){ (p.imgs||[]).forEach(function(s,i){ if(s.indexOf("data:")===0) pending.push({p:p,i:i,s:s}); }); });
+        for(var k=0;k<pending.length;k++){
+          setStatus("Загружаю фото "+(k+1)+" из "+pending.length+"…","warn");
+          var r=await api({action:"image",data:pending[k].s});
+          pending[k].p.imgs[pending[k].i]=r.url;
+          try{ localStorage.setItem("amd05_store",JSON.stringify(STORE)); }catch(e){}
+        }
+        setStatus("Публикую для всех посетителей…","warn");
+        var res=await api({action:"save",store:{info:STORE.info,categories:STORE.categories,products:STORE.products}});
+        STORE=normalizeStore(res.store); DIRTY=false;
+        try{ localStorage.removeItem("amd05_store"); }catch(e){}
+        renderAll(); busy=false; renderAdmin();
+        setStatus("Опубликовано. Все посетители уже видят обновление.","ok");
+      }catch(e){
+        busy=false;
+        if(e.status===401){
+          pw=""; try{ sessionStorage.removeItem("amd05_pw"); }catch(_){}
+          loginBox.hidden=false; area.hidden=true; pubBtn.hidden=true; discBtn.hidden=true;
+          document.getElementById("passErr").textContent="Пароль не подошёл. Войдите заново, ваши правки сохранены.";
+          document.getElementById("passErr").style.display="block";
+        } else { setStatus(explain(e),"warn"); }
+        updateHeader();
+      }
+    }
+    pubBtn.addEventListener("click",publish);
+
+    /* ---- вход ---- */
+    function enter(){
+      loginBox.hidden=true; area.hidden=false; pubBtn.hidden=false;
+      renderAdmin();
+    }
+    function doLogin(){
+      var err=document.getElementById("passErr"); err.style.display="none";
+      var typed=document.getElementById("admPass").value;
+      if(!typed){ err.textContent="Введите пароль"; err.style.display="block"; return; }
+      pw=typed;
+      var btn=document.getElementById("admLoginBtn"); btn.disabled=true;
+      api({action:"check"}).then(function(){
+        try{ sessionStorage.setItem("amd05_pw",pw); }catch(e){}
+        document.getElementById("admPass").value=""; enter();
+      }).catch(function(e){ pw=""; err.textContent=explain(e); err.style.display="block"; })
+        .then(function(){ btn.disabled=false; });
+    }
+    document.getElementById("admLoginBtn").addEventListener("click",doLogin);
+    document.getElementById("admPass").addEventListener("keydown",function(e){ if(e.key==="Enter") doLogin(); });
+    document.getElementById("adminOpen").addEventListener("click",function(){
+      modal.classList.add("open");
+      if(pw&&area.hidden) enter();
+      else if(!pw) setTimeout(function(){ document.getElementById("admPass").focus(); },50);
+    });
+    document.getElementById("adminClose").addEventListener("click",function(){ modal.classList.remove("open"); });
+    modal.addEventListener("click",function(e){ if(e.target===modal) modal.classList.remove("open"); });
+
+    qsa(".tabs button").forEach(function(b){
+      b.addEventListener("click",function(){
+        qsa(".tabs button").forEach(function(x){ x.classList.remove("active"); }); b.classList.add("active");
+        var t=b.getAttribute("data-tab");
+        qsa("[data-pane]").forEach(function(p){ p.hidden = p.getAttribute("data-pane")!==t; });
+      });
+    });
+
+    /* ---- товары ---- */
+    function parseTags(s){ return String(s||"").split(/[,;·|\n]+/).map(function(x){ return x.trim(); }).filter(Boolean); }
+    function drawTagPrev(){
+      document.getElementById("pTagsPrev").innerHTML = parseTags(document.getElementById("pTags").value).map(function(t){ return "<span>"+esc(t)+"</span>"; }).join("");
+    }
+    document.getElementById("pTags").addEventListener("input",drawTagPrev);
+
+    function ferr(m){ formErr.textContent=m||""; }
+    function fillCatSelect(sel){
+      var s=document.getElementById("pCat");
+      s.innerHTML=STORE.categories.map(function(c){ return '<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>'; }).join("");
+      if(sel) s.value=sel;
+    }
+    function openForm(p){
+      fillCatSelect(p?p.cat:(activeCat!=="all"?activeCat:null));
+      document.getElementById("pFormTitle").textContent = p?"Редактирование товара":"Новый товар";
+      document.getElementById("pId").value = p?p.id:"";
+      document.getElementById("pName").value = p?p.name:"";
+      document.getElementById("pPrice").value = p?(p.price||""):"";
+      document.getElementById("pStock").checked = p?!!p.stock:true;
+      document.getElementById("pTags").value = p?parseTags(p.desc).join(", "):"";
+      document.getElementById("pNote").value = p?(p.note||""):"";
+      formImgs = p&&p.imgs ? p.imgs.slice() : [];
+      ferr(""); drawTagPrev(); renderImgs();
+      form.hidden=false; form.scrollIntoView({behavior:"smooth",block:"start"});
+      document.getElementById("pName").focus();
+    }
+    function closeForm(){ form.hidden=true; formImgs=[]; ferr(""); }
+    document.getElementById("pNew").addEventListener("click",function(){ openForm(null); });
+    document.getElementById("pCancel").addEventListener("click",closeForm);
+
+    function renderImgs(){
+      var el=document.getElementById("pImgs");
+      el.innerHTML=formImgs.map(function(s,i){
+        return '<div class="aimg"><img src="'+s+'" alt="">'+(i===0?'<span class="first">Главное</span>':'')+
+          '<div class="aact"><button type="button" data-a="l" data-i="'+i+'" aria-label="Левее">‹</button><button type="button" data-a="d" data-i="'+i+'" aria-label="Удалить фото">✕</button><button type="button" data-a="r" data-i="'+i+'" aria-label="Правее">›</button></div></div>';
+      }).join("");
+      qsa("button",el).forEach(function(b){
+        b.addEventListener("click",function(){
+          var i=+b.getAttribute("data-i"), a=b.getAttribute("data-a"), t;
+          if(a==="d") formImgs.splice(i,1);
+          else if(a==="l"&&i>0){ t=formImgs[i-1]; formImgs[i-1]=formImgs[i]; formImgs[i]=t; }
+          else if(a==="r"&&i<formImgs.length-1){ t=formImgs[i+1]; formImgs[i+1]=formImgs[i]; formImgs[i]=t; }
+          renderImgs();
+        });
+      });
+    }
+    function fileToJpeg(file){
+      return new Promise(function(res,rej){
+        var fr=new FileReader();
+        fr.onload=function(){
+          var img=new Image();
+          img.onload=function(){
+            var max=1000, r=Math.min(1,max/Math.max(img.width,img.height));
+            var c=document.createElement("canvas"); c.width=Math.max(1,Math.round(img.width*r)); c.height=Math.max(1,Math.round(img.height*r));
+            var ctx=c.getContext("2d"); ctx.fillStyle="#fff"; ctx.fillRect(0,0,c.width,c.height); ctx.drawImage(img,0,0,c.width,c.height);
+            res(c.toDataURL("image/jpeg",0.82));
+          };
+          img.onerror=function(){ rej(new Error("img")); };
+          img.src=fr.result;
+        };
+        fr.onerror=function(){ rej(new Error("read")); };
+        fr.readAsDataURL(file);
+      });
+    }
+    document.getElementById("pFiles").addEventListener("change",async function(){
+      var inp=this, files=Array.prototype.slice.call(inp.files||[]); inp.value="";
+      ferr("");
+      for(var k=0;k<files.length;k++){
+        var f=files[k];
+        if(formImgs.length>=8){ ferr("Максимум 8 фото на товар."); break; }
+        if(!f.type||f.type.indexOf("image")!==0) continue;
+        try{ formImgs.push(await fileToJpeg(f)); }
+        catch(e){ ferr("Не удалось прочитать «"+f.name+"». Подойдут JPG и PNG."); }
+      }
+      renderImgs();
+    });
+
+    document.getElementById("pSave").addEventListener("click",function(){
+      var name=val("pName");
+      if(!name){ ferr("Введите название товара."); document.getElementById("pName").focus(); return; }
+      var id=val("pId"), prev=null;
+      if(id){ STORE.products.forEach(function(x){ if(x.id===id) prev=x; }); }
+      var obj=Object.assign({}, prev||{}, {
+        id:id||("p"+Date.now()), cat:document.getElementById("pCat").value, name:name, price:val("pPrice"),
+        desc:parseTags(document.getElementById("pTags").value).join(" · "), note:val("pNote"),
+        stock:document.getElementById("pStock").checked, imgs:formImgs.slice()
+      });
+      if(prev){ STORE.products[STORE.products.indexOf(prev)]=obj; } else { STORE.products.unshift(obj); }
+      closeForm(); markDirty();
+      setStatus("Товар сохранён. Нажмите «Опубликовать для всех», чтобы его увидели посетители.","ok");
+    });
+
+    function renderProdList(){
+      var el=document.getElementById("admProdList"), n=STORE.products.length;
+      el.innerHTML=STORE.products.map(function(p,i){
+        var th=(p.imgs&&p.imgs[0])?'<img class="adm-th" src="'+p.imgs[0]+'" alt="">':'<span class="adm-th"></span>';
+        return '<div class="adm-row">'+th+'<div class="ri"><b>'+esc(p.name)+'</b><span>'+esc(catName(p.cat))+(p.price?" · "+esc(p.price):" · без цены")+(p.stock?"":" · под заказ")+(p.imgs&&p.imgs.length?" · фото: "+p.imgs.length:"")+'</span></div>'+
+          '<button type="button" class="mv" data-up="'+i+'" aria-label="Выше"'+(i===0?" disabled":"")+'>↑</button>'+
+          '<button type="button" class="mv" data-dn="'+i+'" aria-label="Ниже"'+(i===n-1?" disabled":"")+'>↓</button>'+
+          '<button type="button" class="edit" data-ed="'+esc(p.id)+'">Изм.</button>'+
+          '<button type="button" class="del" data-del="'+esc(p.id)+'">Удал.</button></div>';
+      }).join("") || '<div class="hint" style="padding:8px">Товаров пока нет. Нажмите «Новый товар».</div>';
+      function swap(i,j){ var t=STORE.products[i]; STORE.products[i]=STORE.products[j]; STORE.products[j]=t; markDirty(); }
+      qsa("[data-up]",el).forEach(function(b){ b.addEventListener("click",function(){ var i=+b.getAttribute("data-up"); if(i>0) swap(i,i-1); }); });
+      qsa("[data-dn]",el).forEach(function(b){ b.addEventListener("click",function(){ var i=+b.getAttribute("data-dn"); if(i<n-1) swap(i,i+1); }); });
+      qsa("[data-ed]",el).forEach(function(b){ b.addEventListener("click",function(){
+        var id=b.getAttribute("data-ed"), p=null; STORE.products.forEach(function(x){ if(x.id===id) p=x; }); if(p) openForm(p);
+      }); });
+      qsa("[data-del]",el).forEach(function(b){ b.addEventListener("click",function(){
+        if(b.getAttribute("data-armed")==="1"){
+          var id=b.getAttribute("data-del"); STORE.products=STORE.products.filter(function(x){ return x.id!==id; }); markDirty();
+        } else {
+          b.setAttribute("data-armed","1"); b.textContent="Точно?";
+          setTimeout(function(){ b.setAttribute("data-armed","0"); b.textContent="Удал."; },3000);
+        }
+      }); });
+    }
+
+    /* ---- категории ---- */
+    document.getElementById("cAdd").addEventListener("click",function(){
+      var n=val("cName"); if(!n) return;
+      STORE.categories.push({id:"c"+Date.now(),name:n}); document.getElementById("cName").value=""; markDirty();
+    });
+    function renderCatList(){
+      var el=document.getElementById("admCatList");
+      el.innerHTML=STORE.categories.map(function(c){
+        var cnt=STORE.products.filter(function(p){ return p.cat===c.id; }).length;
+        return '<div class="adm-row"><input class="input cin" data-cid="'+esc(c.id)+'" value="'+esc(c.name)+'" aria-label="Название категории"><span class="cnt">'+cnt+' тов.</span><button type="button" class="del" data-dc="'+esc(c.id)+'">Удал.</button></div>';
+      }).join("");
+      qsa(".cin",el).forEach(function(inp){ inp.addEventListener("change",function(){
+        var id=inp.getAttribute("data-cid"), v=inp.value.trim(); if(!v){ renderCatList(); return; }
+        STORE.categories.forEach(function(c){ if(c.id===id) c.name=v; }); markDirty();
+      }); });
+      qsa("[data-dc]",el).forEach(function(b){ b.addEventListener("click",function(){
+        var id=b.getAttribute("data-dc");
+        if(STORE.products.some(function(p){ return p.cat===id; })){ setStatus("Нельзя удалить категорию, пока в ней есть товары. Сначала перенесите или удалите их.","warn"); return; }
+        STORE.categories=STORE.categories.filter(function(c){ return c.id!==id; }); if(activeCat===id) activeCat="all"; markDirty();
+      }); });
+    }
+
+    /* ---- о нас / контакты ---- */
+    document.getElementById("iSave").addEventListener("click",function(){
+      STORE.info.about=document.getElementById("iAbout").value;
+      STORE.info.hours=document.getElementById("iHours").value;
+      STORE.info.address=document.getElementById("iAddr").value;
+      markDirty(); setStatus("Сохранено. Нажмите «Опубликовать для всех».","ok");
+    });
+
+    function renderAdmin(){
+      if(area.hidden) return;
+      renderProdList(); renderCatList();
+      if(form.hidden) fillCatSelect();
+      var ab=document.getElementById("iAbout"); if(document.activeElement!==ab) ab.value=STORE.info.about||"";
+      document.getElementById("iHours").value=STORE.info.hours||"";
+      document.getElementById("iAddr").value=STORE.info.address||"";
+      updateHeader();
+      if(draftFailed) setStatus("Черновик слишком большой для хранения в браузере. Опубликуйте правки сразу, иначе они пропадут при закрытии страницы.","warn");
+    }
+    onStoreReplaced=function(){ renderAdmin(); };
+  })();
+
+  document.getElementById("yr").textContent=new Date().getFullYear();
+  renderAll();
+  syncRemote(false);
+  setTimeout(function(){ if(!READY){ READY=true; renderAll(); } },6000);
+})();
+</script>
+<script src="/legal-config.js"></script>
+<script src="/legal.js"></script>
+</body>
+</html>
